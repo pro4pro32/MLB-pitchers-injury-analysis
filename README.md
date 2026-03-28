@@ -1,2 +1,2 @@
 # Patrick-Pikell-baseball-portfolio
-In these files, I will analyze different aspects of the game from various sources. I will try to answer questions related with such topics as for example swings, strike zones, pitches or injuries.
+I will analyse the injuries from each pitcher from the 40 man roster from the end of March 2026 to analyze how many days they have missed on the injured list from the start of their career (or from April 2015) counting days from April to September. You can check the %injured time for each pitcher while checking out stats that are related with injuries - spin rate, fastball velocity and the usage of breaking balls. 
