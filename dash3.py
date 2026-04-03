@@ -334,4 +334,3 @@ if show_league_wide:
         fig_l.update_layout(yaxis_range=[0, 100])
         st.plotly_chart(fig_l, use_container_width=True)
 
-st.caption("✅ Dashboard dostosowany do Twoich kolumn: il_days, active_days, pct_injured_%, g2025, ip2025")
