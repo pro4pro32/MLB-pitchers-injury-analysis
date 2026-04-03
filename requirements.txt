@@ -1,0 +1,8 @@
+streamlit
+pandas
+numpy
+requests
+pybaseball
+plotly
+pathlib
+pickle5; python_version < "3.8"  # tylko jeśli używasz bardzo starego Pythona
