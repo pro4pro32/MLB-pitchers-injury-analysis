@@ -156,20 +156,22 @@ translations = {
 
 t = translations[language]
 
-# ================== SCATTER OPTIONS (pozostają po angielsku - uniwersalne) ==================
+# ================== SCATTER OPTIONS (bez "(symulacja)") ==================
 scatter_options = [
-    "FB Spin vs % IL", "FB Velo vs % IL",
-    "Breaking % vs % IL", "Offspeed Spin vs % IL (symulacja)"
+    "FB Spin vs % IL", 
+    "FB Velo vs % IL",
+    "Breaking % vs % IL", 
+    "Offspeed Spin vs % IL"   # <-- usunięto "(symulacja)"
 ]
 
 x_map = {
     "FB Spin vs % IL": "fb_spin",
     "FB Velo vs % IL": "fb_velo",
     "Breaking % vs % IL": "breaking_%",
-    "Offspeed Spin vs % IL (symulacja)": "fb_spin"
+    "Offspeed Spin vs % IL": "fb_spin"   # <-- zaktualizowano klucz
 }
 
-# ================== FUNKCJE POMOCNICZE (bez zmian) ==================
+# ================== FUNKCJE POMOCNICZE ==================
 def prepare_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     rename_dict = {
         'il_days': 'il_days_apr_sep',
@@ -243,7 +245,17 @@ mlb_teams = [
 
 # ================== FILTRY ==================
 team1 = st.sidebar.selectbox(t["main_team"], mlb_teams)
-team2_options = ["--- no comparison ---"] + [t for t in mlb_teams if t != team1]
+
+# Opcja "brak porównania" przetłumaczona dla każdego języka
+no_comparison = {
+    "English": "--- no comparison ---",
+    "Polski": "--- brak porównania ---",
+    "Español": "--- sin comparación ---",
+    "Français": "--- pas de comparaison ---",
+    "日本語": "--- 比較なし ---"
+}[language]
+
+team2_options = [no_comparison] + [t for t in mlb_teams if t != team1]
 team2 = st.sidebar.selectbox(t["compare_team"], team2_options)
 
 role_filter = st.sidebar.radio(t["role_filter"], [t["all"], t["starters"], t["relievers"]])
@@ -290,7 +302,12 @@ fig_bar.update_layout(
 st.plotly_chart(fig_bar, use_container_width=True)
 
 # ================== TABELA ==================
-st.subheader(f"Details – {team1}" if language == "English" else f"Szczegóły – {team1}" if language == "Polski" else "Detalles" if language in ["Español"] else "Détails" if language == "Français" else "詳細")
+st.subheader("Details – " + team1 if language == "English" else 
+             "Szczegóły – " + team1 if language == "Polski" else
+             "Detalles – " + team1 if language == "Español" else
+             "Détails – " + team1 if language == "Français" else
+             "詳細 – " + team1)
+
 st.dataframe(
     df1[['player', 'Role', 'IP_per_game', 'il_days_apr_sep', 'active_days_apr_sep',
          'pct_injured_apr_sep_%', 'fb_velo', 'fb_spin', 'breaking_%']].round(2),
@@ -319,8 +336,10 @@ with col1:
     st.plotly_chart(fig_bar, use_container_width=True, key="compare1")
 
 with col2:
-    st.subheader(f"2. {team2 if team2 != '--- no comparison ---' else t['compare_team_placeholder']}")
-    if team2 != "--- no comparison ---":
+    display_team2 = team2 if team2 != no_comparison else t["compare_team_placeholder"]
+    st.subheader(f"2. {display_team2}")
+    
+    if team2 != no_comparison:
         file2 = f"{team2.replace(' ', '_')}_injury_analysis_MLB_only.csv"
         if Path(file2).exists():
             df2 = pd.read_csv(file2)
